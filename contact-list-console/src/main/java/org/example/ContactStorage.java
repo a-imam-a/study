@@ -19,37 +19,48 @@ public class ContactStorage {
     @Value("${spring.profiles.active}")
     private String profile;
     @Value("${app.fileStorage}")
-    private String fileStorage;
+    private String filePath;
 
     public HashMap<String, Contact> initializeContacts() {
         HashMap<String, Contact> contacts = new HashMap();
-        if (profile.equals(INIT)) {
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader(fileStorage));
-                String line = reader.readLine();
-                while (line != null) {
-                    String[] arrayContact = line.split(";");
-                    contacts.put(arrayContact[2], new Contact(arrayContact[0], arrayContact[1], arrayContact[2]));
-                    line = reader.readLine();
-                }
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                LOGGER.error(EXCEPTIONS_MARKER,  "initializeContacts: " + e.getMessage());
+        if (!profile.equals(INIT)) {
+            return contacts;
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {
+            String text = "?? ?????? ???? ????????????? ?????????";
+            System.out.println(text);
+            LOGGER.error(EXCEPTIONS_MARKER, text);
+            return contacts;
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            while (line != null) {
+                String[] arrayContact = line.split(";");
+                contacts.put(arrayContact[2], new Contact(arrayContact[0], arrayContact[1], arrayContact[2]));
+                line = reader.readLine();
             }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("?????? ??? ????????????? ????????? ?? ?????: " + e.getMessage());
+            LOGGER.error(EXCEPTIONS_MARKER,  "initializeContacts: " + e.getMessage());
         }
         return contacts;
     }
 
     public void saveContacts(HashMap<String, Contact> contacts) {
-
+        if (filePath.isEmpty()) filePath = "src/main/resources/default-contacts.txt";
         try {
-            if (fileStorage.isEmpty()) fileStorage = "src/main/resources/default-contacts.txt";
-            FileWriter writer = new FileWriter(fileStorage);
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(filePath);
             contacts.forEach((s, contact) -> addToWriter(writer, contact));
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("?????? ?????????? ???????????? ? ????: " + e.getMessage());
             LOGGER.error(EXCEPTIONS_MARKER,  "saveContacts: " + e.getMessage());
         }
     }

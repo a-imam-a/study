@@ -7,7 +7,7 @@ public class InputTextChecker {
 
     public static boolean fullNameIsCorrect(String fullName) {
 
-        String[] fullNameArray = fullName.split("\\s");
+        String[] fullNameArray = fullName.trim().split("\\s");
         if (fullNameArray.length != 3) {
             System.out.println("Некорректный формат ввода ФИО");
             return false;
@@ -23,13 +23,13 @@ public class InputTextChecker {
     }
 
     public static boolean emailIsCorrect(String email){
-        Pattern p = Pattern.compile(".+@.+\\..+");
+        Pattern p = Pattern.compile(".+@.+");
         Matcher m = p.matcher(email);
         return m.matches();
     }
 
     public static boolean isPhoneNumberIsCorrect(String phoneNumber){
-        Pattern p = Pattern.compile("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$");
+        Pattern p = Pattern.compile("^((8|\\+\\d)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$");
         Matcher m = p.matcher(phoneNumber);
         return m.matches();
     }
