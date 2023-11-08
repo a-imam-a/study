@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -26,15 +28,15 @@ public class ContactStorage {
         if (!profile.equals(INIT)) {
             return contacts;
         }
-        File file = new File(filePath);
-        if (!file.exists()) {
-            String text = "?? ?????? ???? ????????????? ?????????";
+        Resource resource = new ClassPathResource(filePath);
+        if (!resource.exists()) {
+            String text = "Не найден файл инициализации контактов";
             System.out.println(text);
             LOGGER.error(EXCEPTIONS_MARKER, text);
             return contacts;
         }
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
             String line = reader.readLine();
             while (line != null) {
                 String[] arrayContact = line.split(";");
@@ -43,24 +45,24 @@ public class ContactStorage {
             }
             reader.close();
         } catch (IOException e) {
-            System.out.println("?????? ??? ????????????? ????????? ?? ?????: " + e.getMessage());
+            System.out.println("Ошибка при инициализаци контактов из файла: " + e.getMessage());
             LOGGER.error(EXCEPTIONS_MARKER,  "initializeContacts: " + e.getMessage());
         }
         return contacts;
     }
 
     public void saveContacts(HashMap<String, Contact> contacts) {
-        if (filePath.isEmpty()) filePath = "src/main/resources/default-contacts.txt";
+        if (filePath.isEmpty()) filePath = "default-contacts.txt";
         try {
-            File file = new File(filePath);
+            File file = new ClassPathResource(filePath).getFile();
             if (!file.exists()) {
                 file.createNewFile();
             }
-            FileWriter writer = new FileWriter(filePath);
+            FileWriter writer = new FileWriter(file.getAbsoluteFile());
             contacts.forEach((s, contact) -> addToWriter(writer, contact));
             writer.close();
         } catch (IOException e) {
-            System.out.println("?????? ?????????? ???????????? ? ????: " + e.getMessage());
+            System.out.println("Ошибка сохранения контактов в файл: " + e.getMessage());
             LOGGER.error(EXCEPTIONS_MARKER,  "saveContacts: " + e.getMessage());
         }
     }

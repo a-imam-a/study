@@ -24,13 +24,13 @@ public class InputTextChecker {
 
     public static boolean emailIsCorrect(String email){
         Pattern p = Pattern.compile(".+@.+");
-        Matcher m = p.matcher(email);
+        Matcher m = p.matcher(email.trim());
         return m.matches();
     }
 
     public static boolean isPhoneNumberIsCorrect(String phoneNumber){
         Pattern p = Pattern.compile("^((8|\\+\\d)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$");
-        Matcher m = p.matcher(phoneNumber);
+        Matcher m = p.matcher(phoneNumber.trim());
         return m.matches();
     }
 

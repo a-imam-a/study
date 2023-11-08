@@ -18,7 +18,7 @@ public class Main {
 
         ExecutorFactory executorFactory = new ExecutorFactory();
         while (true){
-            System.out.println("Введите одну из следующих команд - LIST, ADD, DELETE, SAVE, EXIT:");
+            System.out.println("Введите одну из следующих команд - LIST, ADD, DEL, SAVE, EXIT:");
             Scanner scanner = new Scanner(System.in);
             String inputText = scanner.nextLine();
             if (inputText.toUpperCase(Locale.ROOT).equals("EXIT")) {
