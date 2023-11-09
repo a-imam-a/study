@@ -54,7 +54,7 @@ public class ContactStorage {
     public void saveContacts(HashMap<String, Contact> contacts) {
         if (filePath.isEmpty()) filePath = "default-contacts.txt";
         try {
-            File file = new ClassPathResource(filePath).getFile();
+            File file = new File(filePath);
             if (!file.exists()) {
                 file.createNewFile();
             }
