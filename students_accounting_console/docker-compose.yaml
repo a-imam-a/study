@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  students-accounting:
+    image: students-accounting
+    environment:
+      - CREATE_ON_STARTUP=false

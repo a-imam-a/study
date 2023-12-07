@@ -1,0 +1,3 @@
+app:
+  create-on-startup:
+    enabled: ${CREATE_ON_STARTUP:false}
