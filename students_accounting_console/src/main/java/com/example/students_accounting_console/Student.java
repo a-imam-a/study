@@ -25,7 +25,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return MessageFormat.format("student : {0} {1};  age: {2}",
-                firstName, lastName, age);
+        return MessageFormat.format("student : {0} {1};  age: {2}; id: {3}",
+                firstName, lastName, age, id);
     }
 }
