@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/contacts
+    username: postgres
+    password: postgres
+    hikari:
+      schema: contacts_schema
+logging:
+  level:
+    root: debug
+app:
+  init-on-startup:
+    enabled: ${INIT_ON_STARTUP:false}
