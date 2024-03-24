@@ -1,16 +1,16 @@
 ## Book storage with redis cache
 Приложение написано в учебных целях.
 #### Виды кешей:
-1. **bookFindAll** - ключом выступают передаваемые pageNumber и pageSize;
+1. **bookFindAllByCategory** - ключом выступают передаваемые categoryName, pageNumber и pageSize;
 2. **bookFindByNameAndAuthor** - ключем выступают параметры запроса name и author;
 3. **bookFindById** - данный вид кеша неактивен.
 
 #### API предоставляет возможность:
-* получать все книги - результат кешируется в **bookFindAll**;
+* получать все книги - результат кешируется в **bookFindAllByCategory**;
 * получать книги по наименованию и автору - результат кешируется в **bookFindByNameAndAuthor**;
-* создавать книги - инвалидируется **bookFindAll**;
-* редактировать книги - инвалидируются **bookFindAll** и **bookFindByNameAndAuthor**;
-* удалять книги - инвалидируются **bookFindAll** и **bookFindByNameAndAuthor**.
+* создавать книги - инвалидируется **bookFindAllByCategory**;
+* редактировать книги - инвалидируются **bookFindAllByCategory** и **bookFindByNameAndAuthor**;
+* удалять книги - инвалидируются **bookFindAllByCategory** и **bookFindByNameAndAuthor**.
 
 В конфигурационном файле можно настроить срок инвалидации кешей: свойство **expiry**, которое есть у каждого кеша
 

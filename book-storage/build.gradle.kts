@@ -32,6 +32,11 @@ dependencies {
 	implementation("org.mapstruct:mapstruct:1.5.3.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("com.redis.testcontainers:testcontainers-redis-junit-jupiter:1.4.6")
+	testImplementation("org.testcontainers:junit-jupiter:1.19.4")
+	testImplementation("org.testcontainers:postgresql:1.19.4")
+	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.1")
+	testImplementation("net.javacrumbs.json-unit:json-unit:3.2.2")
 }
 
 tasks.withType<Test> {

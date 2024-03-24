@@ -12,6 +12,7 @@ import com.example.bookstorage.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -30,8 +31,10 @@ public class BookServiceImpl implements BookService {
 
     private final CategoryService categoryServiceImpl;
 
+    private final CacheManager cacheManager;
+
+
     @Override
-    @Cacheable(value = AppCacheProperties.CacheNames.ALL_BOOKS, key = "#filter.getPageNumber() + #filter.getPageSize()")
     public List<Book> findAll(BookFilter filter) {
         log.info("Calling BookServiceImpl.findAll");
         return repository.findAll(
@@ -41,7 +44,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-//    @Cacheable(value = AppCacheProperties.CacheNames.BOOK_BY_ID, key = "#id")
     public Book findById(Long id) {
         log.info("Calling BookServiceImpl.findById");
         return repository.findById(id)
@@ -60,44 +62,32 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @CacheEvict(value = AppCacheProperties.CacheNames.ALL_BOOKS, allEntries = true)
     public Book create(Book book) {
         saveBookCategory(book);
         return repository.save(book);
     }
 
     @Override
-    @Caching(evict = {
-/*            @CacheEvict(
-                    value = AppCacheProperties.CacheNames.BOOK_BY_ID,
-                    key = "#id",
-                    beforeInvocation = true
-            ),*/
-            @CacheEvict(
-                value = AppCacheProperties.CacheNames.BOOK_BY_NAME_AND_AUTHOR,
-                key = "#book.getName() + #book.getAuthor()",
-                beforeInvocation = true
-    ),
-            @CacheEvict(value = AppCacheProperties.CacheNames.ALL_BOOKS, allEntries = true)
-    })
     public Book update(Long id, Book book) {
+
+        EvictCacheByNameAndAuthor(book);
+
         saveBookCategory(book);
         Book existedBook = findById(id);
         BeanUtils.copyProperties(book, existedBook);
         return repository.save(existedBook);    }
 
     @Override
-    @Caching(evict = {
-/*            @CacheEvict(
-                    value = AppCacheProperties.CacheNames.BOOK_BY_ID,
-                    key = "#id",
-                    beforeInvocation = true
-            ),*/
-            @CacheEvict(value = AppCacheProperties.CacheNames.BOOK_BY_NAME_AND_AUTHOR, allEntries = true),
-            @CacheEvict(value = AppCacheProperties.CacheNames.ALL_BOOKS, allEntries = true)
-    })
     public void deleteById(Long id) {
+        Book book = findById(id);
+        EvictCacheByNameAndAuthor(book);
         repository.deleteById(id);
+    }
+
+    private void EvictCacheByNameAndAuthor(Book book) {
+        cacheManager
+                .getCache(AppCacheProperties.CacheNames.BOOK_BY_NAME_AND_AUTHOR)
+                .evict(book.getName() + book.getAuthor());
     }
 
     private void saveBookCategory(Book book) {

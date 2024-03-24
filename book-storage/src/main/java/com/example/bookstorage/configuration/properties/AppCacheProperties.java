@@ -25,7 +25,6 @@ public class AppCacheProperties {
     }
 
     public interface CacheNames {
-        String ALL_BOOKS = "bookFindAll";
         String BOOK_BY_ID = "bookFindById";
         String BOOK_BY_NAME_AND_AUTHOR = "bookFindByNameAndAuthor";
     }
