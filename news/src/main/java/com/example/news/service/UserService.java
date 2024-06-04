@@ -1,5 +1,6 @@
 package com.example.news.service;
 
+import com.example.news.entity.Role;
 import com.example.news.entity.User;
 import com.example.news.model.filter.UserFilter;
 
@@ -11,7 +12,9 @@ public interface UserService {
 
     User findById(Long id);
 
-    User save(User user);
+    User findByUsername(String username);
+
+    User save(User user, Role role);
 
     User update(User user);
 

@@ -22,6 +22,7 @@ import java.util.Map;
 
 @Aspect
 @Component
+@Deprecated
 @Slf4j
 public class CheckingAspect {
 

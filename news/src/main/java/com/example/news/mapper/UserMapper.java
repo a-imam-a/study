@@ -1,5 +1,6 @@
 package com.example.news.mapper;
 
+import com.example.news.entity.RoleType;
 import com.example.news.entity.User;
 import com.example.news.model.UserResponse;
 import com.example.news.model.UserRequest;

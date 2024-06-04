@@ -11,5 +11,8 @@ import lombok.NoArgsConstructor;
 public class UserRequest {
 
     @NotBlank(message = "Имя пользоватлеля должно быть заполнено!")
-    private String name;
+    private String username;
+
+    @NotBlank(message = "Пароль пользоватлеля должен быть заполнен!")
+    private String password;
 }

@@ -54,7 +54,7 @@ public class NewsCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         newsCategoryServiceImpl.deleteById(id);
         return ResponseEntity.noContent().build();
     }

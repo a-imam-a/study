@@ -5,12 +5,14 @@ import com.example.news.model.filter.NewsFilter;
 import com.example.news.model.NewsRequest;
 import com.example.news.model.NewsResponse;
 import com.example.news.model.NewsResponseWithComments;
+import com.example.news.security.AppUserPrincipal;
 import com.example.news.service.NewsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,31 +46,31 @@ public class NewsController {
     }
 
     @PostMapping
-    public ResponseEntity<NewsResponseWithComments> create(@RequestHeader("User-Id") Long userId,
+    public ResponseEntity<NewsResponseWithComments> create(@AuthenticationPrincipal AppUserPrincipal userDetails,
                                                @RequestBody @Valid NewsRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(newsMapper.newsToResponseWithComments(
                         newsServiceImpl.save(
-                                newsMapper.requestToNews(request, userId)
+                                newsMapper.requestToNews(request, userDetails.getId())
                         )
                     )
                 );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NewsResponseWithComments> update(@RequestHeader("User-Id") Long userId,
+    public ResponseEntity<NewsResponseWithComments> update(@AuthenticationPrincipal AppUserPrincipal userDetails,
                                                @PathVariable("id") Long newsId,
                                                @RequestBody @Valid NewsRequest request) {
         return ResponseEntity.ok(
                 newsMapper.newsToResponseWithComments(
                         newsServiceImpl.update(
-                                newsMapper.requestToNews(newsId, request, userId))
+                                newsMapper.requestToNews(newsId, request, userDetails.getId()))
                 )
         );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         newsServiceImpl.deleteById(id);
         return ResponseEntity.noContent().build();
     }

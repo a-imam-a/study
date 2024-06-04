@@ -5,12 +5,14 @@ import com.example.news.mapper.NewsCommentMapper;
 import com.example.news.model.ErrorResponse;
 import com.example.news.model.NewsCommentResponse;
 import com.example.news.model.NewsCommentRequest;
+import com.example.news.security.AppUserPrincipal;
 import com.example.news.service.NewsCommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -39,18 +41,23 @@ public class NewsCommentController {
     }
 
     @PostMapping
-    public ResponseEntity<NewsCommentResponse> create(@RequestHeader("User-Id") Long userId,
+    public ResponseEntity<NewsCommentResponse> create(@AuthenticationPrincipal AppUserPrincipal userDetails,
                                                       @RequestBody @Valid NewsCommentRequest request) {
-        NewsComment newNewsComment = newsCommentServiceImpl.save(newsCommentMapper.requestToNewsComment(request, userId));
+        NewsComment newNewsComment = newsCommentServiceImpl.save(
+                newsCommentMapper.requestToNewsComment(request, userDetails.getId())
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(newsCommentMapper.newsCommentToResponse(newNewsComment));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NewsCommentResponse> update(@RequestHeader("User-Id") Long userId,
+    public ResponseEntity<NewsCommentResponse> update(@AuthenticationPrincipal AppUserPrincipal userDetails,
                                                       @PathVariable("id") Long commentId, @RequestBody @Valid NewsCommentRequest request) {
 
         try {
-            NewsComment updatedNewsComment= newsCommentServiceImpl.update(newsCommentMapper.requestToNewsComment(commentId, request, userId));
+            NewsComment updatedNewsComment= newsCommentServiceImpl.update(
+                    newsCommentMapper.requestToNewsComment(commentId, request, userDetails.getId())
+            );
+
             return ResponseEntity.ok(
                     newsCommentMapper.newsCommentToResponse(updatedNewsComment)
             );
@@ -62,7 +69,7 @@ public class NewsCommentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         try {
             newsCommentServiceImpl.deleteById(id);
             return ResponseEntity.noContent().build();

@@ -1,6 +1,5 @@
 package com.example.news.service.impl;
 
-import com.example.news.aop.Checkable;
 import com.example.news.entity.NewsComment;
 import com.example.news.entity.User;
 import com.example.news.exception.EntityNotFoundException;
@@ -37,14 +36,12 @@ public class NewsCommentServiceImpl implements NewsCommentService {
     }
 
     @Override
-    @Checkable
     public NewsComment update(NewsComment newsComment) {
         NewsComment existedNewsComment = findById(newsComment.getId());
         BeanUtils.copyNonNullProperties(newsComment, existedNewsComment);
         return repository.save(existedNewsComment);    }
 
     @Override
-    @Checkable
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
