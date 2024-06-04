@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.time.Instant;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Document(collection = "tasks")
 public class Task {
+
     private String id;
     private String name;
     private String description;
@@ -24,6 +27,7 @@ public class Task {
     private String authorId;
     private String assigneeId;
     private Set<String> observerIds;
+
     @ReadOnlyProperty
     private User author;
     @ReadOnlyProperty
